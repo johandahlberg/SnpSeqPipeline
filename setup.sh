@@ -5,7 +5,7 @@
 #SBATCH -n 8
 #SBATCH --qos=b2010028_4nodes
 #SBATCH -C mem24GB
-#SBATCH -t 00:20:00
+#SBATCH -t 00:30:00
 #SBATCH -J setup_SNPSEQ_pipeline
 
 # Very simple setup script to download the latest version of the custom gatk version and build it.
