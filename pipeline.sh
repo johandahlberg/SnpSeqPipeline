@@ -44,8 +44,6 @@ RAW_BAM_OUTPUT="bam_files_raw"
 PROCESSED_BAM_OUTPUT="bam_files_processed"
 VCF_OUTPUT="vcf_files"
 
-# TODO Compile GATK if this is not already done
-
 # Setup directory structure
 if [ ! -d "${RAW_BAM_OUTPUT}" ]; then
    mkdir ${RAW_BAM_OUTPUT}
@@ -62,7 +60,7 @@ fi
 #------------------------------------------------------------------------------------------
 # fastq2bam - converts fastq files in input directory to unaligned bam files
 #------------------------------------------------------------------------------------------
-java ${TMP} -jar ${QUEUE} -S ${SCRIPTS_DIR}/Fastq2Bam.scala --project ${PROJECT_NAME} -f ${PATH_TO_FASTQ} -outputDir ${RAW_BAM_OUTPUT}/ ${DEBUG} -jobRunner Drmaa -jobNative '-A b2010028' --job_walltime 86400 -run
+java ${TMP} -jar ${QUEUE} -S ${SCRIPTS_DIR}/Fastq2Bam.scala --project ${PROJECT_NAME} -f ${PATH_TO_FASTQ} -outputDir ${RAW_BAM_OUTPUT}/ ${DEBUG} -jobRunner Drmaa -jobNative '-A b2010028 -p core' --job_walltime 86400 -run
 
 #------------------------------------------------------------------------------------------
 # Data preprocessing
