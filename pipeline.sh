@@ -60,7 +60,7 @@ fi
 #------------------------------------------------------------------------------------------
 # fastq2bam - converts fastq files in input directory to unaligned bam files
 #------------------------------------------------------------------------------------------
-java ${TMP} -jar ${QUEUE} -S ${SCRIPTS_DIR}/Fastq2Bam.scala --project ${PROJECT_NAME} -f ${PATH_TO_FASTQ} -outputDir ${RAW_BAM_OUTPUT}/ ${DEBUG} -jobRunner Drmaa -jobNative '-A b2010028 -p core' --job_walltime 86400 -run
+java ${TMP} -jar ${QUEUE} -S ${SCRIPTS_DIR}/Fastq2Bam.scala --project ${PROJECT_NAME} -f ${PATH_TO_FASTQ} -outputDir ${RAW_BAM_OUTPUT}/ ${DEBUG} -jobRunner Drmaa -pid b2010028 --job_walltime 86400 -run
 
 #------------------------------------------------------------------------------------------
 # Data preprocessing
