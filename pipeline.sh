@@ -5,6 +5,8 @@
 #SBATCH -t 48:00:00
 #SBATCH --qos=b2010028_4nodes
 #SBATCH -J snp_seq_pipeline_controller
+#BATCH -o pipeline-%j.out
+#SBATCH -e pipeline-%j.error
 
 # Start by exporting the shared drmaa libaries to the LD_LIBRARY_PATH
 export LD_LIBRARY_PATH=/bubo/sw/apps/build/slurm-drmaa/lib/:$LD_LIBRARY_PATH

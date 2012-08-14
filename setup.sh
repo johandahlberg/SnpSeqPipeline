@@ -7,6 +7,8 @@
 #SBATCH -C mem24GB
 #SBATCH -t 00:30:00
 #SBATCH -J setup_SNPSEQ_pipeline
+#SBATCH -o setup-%j.out
+#SBATCH -e setup-%j.error
 
 # Very simple setup script to download the latest version of the custom gatk version and build it.
 
