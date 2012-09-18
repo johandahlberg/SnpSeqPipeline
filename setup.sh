@@ -25,7 +25,7 @@ ANT_OPTS=-Xmx24G
 
 # Compile gatk
 cd gatk
-ant && ant queue
+ant
 
 
 
