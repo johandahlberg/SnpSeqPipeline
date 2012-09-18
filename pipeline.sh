@@ -31,7 +31,7 @@ GENOME_REFERENCE="/bubo/home/h10/joda8933/glob/Data/concat.fasta"
 DB_SNP="/bubo/home/h10/joda8933/glob/Data/dbSNP_all.vcf"
 # Note that the tmp folder needs to be placed in a location that can be reached from all nodes.
 # Note that $SNIC_TMP cannot be used since that will lose necessary data as the nodes/core switch.
-TMP=tmp
+TMP=tmp/${SLURM_JOB_ID}/
 #---------------------------------------------
 # Global variables
 #---------------------------------------------
@@ -49,6 +49,7 @@ function clean_up {
 }
 
 if [ ! -d "${TMP}" ]; then
+   mkdir tmp
    mkdir ${TMP}
 fi
 JAVA_TMP="-Djava.io.tmpdir="${TMP}
