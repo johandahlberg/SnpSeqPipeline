@@ -22,14 +22,16 @@ module load bwa/0.6.2
 #---------------------------------------------
 # Run template - setup which files to run etc
 #---------------------------------------------
+
+# TODO Fix all of these paths - they are not correct.
+PIPELINE_SETUP_XML="pipelineSetup.xml"
 PROJECT_NAME="test_pipeline"
 PATH_TO_FASTQ="/bubo/home/h10/joda8933/glob/private/pipelineTestFolder"
 GENOME_REFERENCE="/bubo/home/h10/joda8933/glob/Data/concat.fasta"
 DB_SNP="/bubo/home/h10/joda8933/glob/Data/dbSNP_all.vcf"
-# Note that the tmp folder needs to be placed in a location that can be reached from all nodes, e.g. glob
+# Note that the tmp folder needs to be placed in a location that can be reached from all nodes.
 # Note that $SNIC_TMP cannot be used since that will lose necessary data as the nodes/core switch.
-TMP=/bubo/home/h10/joda8933/glob/tmp/$SLURM_JOB_ID/
-
+TMP=tmp
 #---------------------------------------------
 # Global variables
 #---------------------------------------------
@@ -76,10 +78,21 @@ if [ ! -d "${VCF_OUTPUT}" ]; then
    mkdir ${VCF_OUTPUT}
 fi
 
+#TODO Fix mechanism for setting walltimes.
+
 #------------------------------------------------------------------------------------------
-# fastq2bam - converts fastq files in input directory to unaligned bam files
+# Align fastq files using bwa - outputs bam files.
 #------------------------------------------------------------------------------------------
-java ${JAVA_TMP} -jar ${QUEUE} -S ${SCRIPTS_DIR}/Fastq2Bam.scala --project ${PROJECT_NAME} -f ${PATH_TO_FASTQ} -outputDir ${RAW_BAM_OUTPUT}/ ${DEBUG} -jobRunner Drmaa -pid b2010028 --job_walltime 86400 -run
+java ${JAVA_TMP} -jar ${QUEUE} -S ${SCRIPTS_DIR}/AlignWithBWA.scala \
+			-i ${PIPELINE_SETUP_XML} \
+			-outputDir ${RAW_BAM_OUTPUT} \
+			-bwa ${PATH_TO_BWA} \
+			-bwape \
+			--bwa_threads ${NBR_OF_BRA_THREADS} \
+			-jobRunner Drmaa \
+			--job_walltime 3600 \
+			-run \
+			${DEBUG}
 
 #------------------------------------------------------------------------------------------
 # Data preprocessing
@@ -90,9 +103,6 @@ java ${JAVA_TMP} -jar ${QUEUE} -S ${SCRIPTS_DIR}/DataProcessingPipeline.scala \
 			  -i ${RAW_BAM_OUTPUT}/${PROJECT_NAME}.cohort.list \
 			  -outputDir ${PROCESSED_BAM_OUTPUT}/ \
 			  --dbsnp ${DB_SNP} \
-			  -bwa ${PATH_TO_BWA} \
-			  --use_bwa_pair_ended \
-			  --bwa_threads ${NBR_OF_BRA_THREADS} \
 			  -cm USE_SW \
 			  -run \
 			  -jobRunner Drmaa -jobNative '-A b2010028 -p node -N 1' \
