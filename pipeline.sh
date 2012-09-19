@@ -1,11 +1,10 @@
 #!/bin/bash -l
-#SBATCH -A b2010028
+#SBATCH -A a2009002
 #SBATCH -p core
 #SBATCH -n 1
 #SBATCH -t 48:00:00
-#SBATCH --qos=b2010028_4nodes
 #SBATCH -J snp_seq_pipeline_controller
-#BATCH -o pipeline-%j.out
+#SBATCH -o pipeline-%j.out
 #SBATCH -e pipeline-%j.error
 
 # Start by exporting the shared drmaa libaries to the LD_LIBRARY_PATH
@@ -26,15 +25,17 @@ module load bwa/0.6.2
 # TODO Fix all of these paths - they are not correct.
 PIPELINE_SETUP_XML="pipelineSetup.xml"
 PROJECT_NAME="test_pipeline"
-PATH_TO_FASTQ="/bubo/home/h10/joda8933/glob/private/pipelineTestFolder"
-GENOME_REFERENCE="/bubo/home/h10/joda8933/glob/Data/concat.fasta"
-DB_SNP="/bubo/home/h10/joda8933/glob/Data/dbSNP_all.vcf"
-# Note that the tmp folder needs to be placed in a location that can be reached from all nodes.
-# Note that $SNIC_TMP cannot be used since that will lose necessary data as the nodes/core switch.
-TMP=tmp/${SLURM_JOB_ID}/
+#PATH_TO_FASTQ="/bubo/home/h10/joda8933/glob/private/pipelineTestFolder"
+GENOME_REFERENCE="../testData/reference/concat.fasta"
+DB_SNP="../testData/reference/dbSNP_all.vcf"
+
 #---------------------------------------------
 # Global variables
 #---------------------------------------------
+
+# Note that the tmp folder needs to be placed in a location that can be reached from all nodes.
+# Note that $SNIC_TMP cannot be used since that will lose necessary data as the nodes/core switch.
+TMP=tmp/${SLURM_JOB_ID}/
 
 # Comment and uncomment DEBUG to enable/disable the debugging mode of the pipeline.
 DEBUG="-l DEBUG -startFromScratch"
@@ -94,6 +95,11 @@ java ${JAVA_TMP} -jar ${QUEUE} -S ${SCRIPTS_DIR}/AlignWithBWA.scala \
 			--job_walltime 3600 \
 			-run \
 			${DEBUG}
+
+#------------------------------------------------------------------------------------------
+# NOTE: These parts of the analysis does not yet suport the xml based setup.
+#       Running them will require manually setting up path etc.
+#------------------------------------------------------------------------------------------
 
 #------------------------------------------------------------------------------------------
 # Data preprocessing
