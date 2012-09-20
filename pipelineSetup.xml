@@ -1,6 +1,6 @@
-<Project Name="TestProject" SequencingCenter="SnqSeq - Uppsala"
-	Platform="Illumina" UppmaxProjectId="b2010028">
-	<RunFolder Report="public/testdata/smallTestFastqDataFolder/report.xml">
-		<SampleFolder Name="1" Path="public/testdata/smallTestFastqDataFolder/Sample_1" Reference="public/testdata/exampleFASTA.fasta"></SampleFolder>
+<Project Name="test_pipeline" SequencingCenter="SnqSeq - Uppsala"	Platform="Illumina" UppmaxProjectId="a2009002">
+	<RunFolder Report="../testData/smallTestFastqDataFolder/report.xml">
+		<SampleFolder Name="CEP_C13-NA11992" Path="../testData/smallTestFastqDataFolder/Sample_CEP_C13-NA11992" Reference="../testData/reference/concat.fasta"></SampleFolder>
+		<SampleFolder Name="CEP_C1-NA10860" Path="../testData/smallTestFastqDataFolder/Sample_CEP_C1-NA10860" Reference="../testData/reference/concat.fasta"></SampleFolder>
 	</RunFolder>
 </Project>
