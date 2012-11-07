@@ -19,7 +19,7 @@ module load ant/1.8.1
 # Clone my gatk repository - getting the stable branch.
 # TODO When there is a stable version. Make sure to change to that...
 git clone https://github.com/johandahlberg/gatk.git -b devel gatk 
-git checkout sp_0.0.1
+git checkout devel
 #Setup the ant maximum java heap size
 ANT_OPTS=-Xmx24G
 
