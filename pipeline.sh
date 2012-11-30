@@ -61,6 +61,7 @@ trap clean_up SIGHUP SIGINT SIGTERM
 QUEUE="${PWD}/gatk/dist/Queue.jar"
 SCRIPTS_DIR="${PWD}/gatk/public/scala/qscript/org/broadinstitute/sting/queue/qscripts"
 PATH_TO_BWA="/bubo/sw/apps/bioinfo/bwa/0.6.2/kalkyl/bwa"
+PATH_TO_SAMTOOLS="/bubo/sw/apps/bioinfo/samtools/0.1.12-10/samtools"
 NBR_OF_BWA_THREADS=8
 
 # Setup directory structure
@@ -89,6 +90,7 @@ java ${JAVA_TMP} -jar ${QUEUE} -S ${SCRIPTS_DIR}/AlignWithBWA.scala \
 			-i ${PIPELINE_SETUP_XML} \
 			-outputDir ${RAW_BAM_OUTPUT}/ \
 			-bwa ${PATH_TO_BWA} \
+			-samtools ${PATH_TO_SAMTOOLS} \
 			-bwape \
 			--bwa_threads ${NBR_OF_BWA_THREADS} \
 			-jobRunner Drmaa \
