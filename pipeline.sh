@@ -2,10 +2,11 @@
 #SBATCH -A a2009002
 #SBATCH -p core
 #SBATCH -n 1
-#SBATCH -t 48:00:00
+#SBATCH -t 120:00:00
 #SBATCH -J snp_seq_pipeline_controller
 #SBATCH -o pipeline-%j.out
 #SBATCH -e pipeline-%j.error
+#SBATCH --qos=seqver
 
 # Start by exporting the shared drmaa libaries to the LD_LIBRARY_PATH
 export LD_LIBRARY_PATH=/bubo/sw/apps/build/slurm-drmaa/lib/:$LD_LIBRARY_PATH
@@ -14,7 +15,8 @@ export LD_LIBRARY_PATH=/bubo/sw/apps/build/slurm-drmaa/lib/:$LD_LIBRARY_PATH
 module load java/sun_jdk1.6.0_18
 module load R/2.15.0
 module load bioinfo-tools
-module load bwa/0.6.2 
+module load bwa/0.6.2
+module load samtools/0.1.18
 
 # TODO Clean up all paths to that they are relative to run folder
 
@@ -22,12 +24,13 @@ module load bwa/0.6.2
 # Run template - setup which files to run etc
 #---------------------------------------------
 
-# TODO Fix all of these paths - they are not correct.
 PIPELINE_SETUP_XML="pipelineSetup.xml"
 PROJECT_NAME="test_pipeline"
-#PATH_TO_FASTQ="/bubo/home/h10/joda8933/glob/private/pipelineTestFolder"
-GENOME_REFERENCE="../testData/reference/concat.fasta"
-DB_SNP="../testData/reference/dbSNP_all.vcf"
+GATK_BUNDLE="/proj/a2009002/SnpSeqPipeline/gatk_bundle"
+GENOME_REFERENCE=${GATK_BUNDLE}"/human_b36_both.fasta"
+DB_SNP=${GATK_BUNDLE}"/dbsnp_137.b36.vcf"
+MILLS=${GATK_BUNDLE}"/Mills_and_1000G_gold_standard.indels.b36.vcf"
+ONE_K_G=${GATK_BUNDLE}"/1000G_phase1.indels.b36.vcf"
 
 #---------------------------------------------
 # Global variables
@@ -61,6 +64,7 @@ trap clean_up SIGHUP SIGINT SIGTERM
 QUEUE="${PWD}/gatk/dist/Queue.jar"
 SCRIPTS_DIR="${PWD}/gatk/public/scala/qscript/org/broadinstitute/sting/queue/qscripts"
 PATH_TO_BWA="/bubo/sw/apps/bioinfo/bwa/0.6.2/kalkyl/bwa"
+PATH_TO_SAMTOOLS="/bubo/sw/apps/bioinfo/samtools/0.1.12-10/samtools"
 NBR_OF_BWA_THREADS=8
 
 # Setup directory structure
@@ -89,6 +93,7 @@ java ${JAVA_TMP} -jar ${QUEUE} -S ${SCRIPTS_DIR}/AlignWithBWA.scala \
 			-i ${PIPELINE_SETUP_XML} \
 			-outputDir ${RAW_BAM_OUTPUT}/ \
 			-bwa ${PATH_TO_BWA} \
+			-samtools ${PATH_TO_SAMTOOLS} \
 			-bwape \
 			--bwa_threads ${NBR_OF_BWA_THREADS} \
 			-jobRunner Drmaa \
