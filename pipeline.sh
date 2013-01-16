@@ -25,12 +25,24 @@ module load samtools/0.1.18
 #---------------------------------------------
 
 PIPELINE_SETUP_XML="pipelineSetup.xml"
-PROJECT_NAME="test_pipeline"
+PROJECT_NAME="QC_20120116"
+PROJECT_ID="a2009002"
+PROJECT_ROOT_DIR="../../"
 GATK_BUNDLE="/proj/a2009002/SnpSeqPipeline/gatk_bundle"
 GENOME_REFERENCE=${GATK_BUNDLE}"/human_b36_both.fasta"
 DB_SNP=${GATK_BUNDLE}"/dbsnp_137.b36.vcf"
 MILLS=${GATK_BUNDLE}"/Mills_and_1000G_gold_standard.indels.b36.vcf"
 ONE_K_G=${GATK_BUNDLE}"/1000G_phase1.indels.b36.vcf"
+
+
+#---------------------------------------------
+# Unless there exists a pipeline setup file, try to create one
+#---------------------------------------------
+
+if [ ! -f ${PIPELINE_SETUP_XML} ];
+then
+	./fixPipelineSetup.py -p ${PROJECT_NAME} -i ${PROJECT_ID}  -R ${GENOME_REFERENCE} -r ${PROJECT_ROOT_DIR} > ${PIPELINE_SETUP_XML}
+fi
 
 #---------------------------------------------
 # Global variables
