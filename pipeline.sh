@@ -123,6 +123,8 @@ java ${JAVA_TMP} -jar ${QUEUE} -S ${SCRIPTS_DIR}/DataProcessingPipeline.scala \
 			  -i ${RAW_BAM_OUTPUT}/${PROJECT_NAME}.cohort.list \
 			  -outputDir ${PROCESSED_BAM_OUTPUT}/ \
 			  --dbsnp ${DB_SNP} \
+                          --extra_indels ${MILLS} \
+                          --extra_indels ${ONE_K_G} \
 			  -cm USE_SW \
 			  -run \
 			  -jobRunner Drmaa -jobNative '-A b2010028 -p node -N 1' \
@@ -146,8 +148,8 @@ java ${JAVA_TMP} -jar ${QUEUE} -S ${SCRIPTS_DIR}/VariantCalling.scala \
 			  -i ${PROCESSED_BAM_OUTPUT}/${PROJECT_NAME}.cohort.list \
 			  -outputDir ${VCF_OUTPUT}/ \
 			  -run \
-			  -jobRunner Drmaa -jobNative '-A b2010028 -p node -N 1' \
-			  --job_walltime 86400 \
+			  -jobRunner Drmaa -jobNative '-A b2010028 -p node -N 1 --qos=seqver' \
+			  --job_walltime 3600 \
 			  -nt 8 \
 			  ${DEBUG}
 
