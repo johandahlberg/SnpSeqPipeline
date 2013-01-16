@@ -33,6 +33,7 @@ GENOME_REFERENCE=${GATK_BUNDLE}"/human_b36_both.fasta"
 DB_SNP=${GATK_BUNDLE}"/dbsnp_137.b36.vcf"
 MILLS=${GATK_BUNDLE}"/Mills_and_1000G_gold_standard.indels.b36.vcf"
 ONE_K_G=${GATK_BUNDLE}"/1000G_phase1.indels.b36.vcf"
+INTERVALS=""
 
 
 #---------------------------------------------
@@ -109,7 +110,7 @@ java ${JAVA_TMP} -jar ${QUEUE} -S ${SCRIPTS_DIR}/AlignWithBWA.scala \
 			-bwape \
 			--bwa_threads ${NBR_OF_BWA_THREADS} \
 			-jobRunner Drmaa \
-			--job_walltime 3600 \
+			--job_walltime 345600 \
 			-run \
 			${DEBUG}
 
@@ -137,6 +138,7 @@ java ${JAVA_TMP} -jar ${QUEUE} -S ${SCRIPTS_DIR}/DataProcessingPipeline.scala \
 			  --dbsnp ${DB_SNP} \
                           --extra_indels ${MILLS} \
                           --extra_indels ${ONE_K_G} \
+			  --gatk_interval_string ${INTERVALS} \
 			  -cm USE_SW \
 			  -run \
 			  -jobRunner Drmaa -jobNative '-A b2010028 -p node -N 1' \
