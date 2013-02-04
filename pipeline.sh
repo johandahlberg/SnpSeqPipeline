@@ -160,11 +160,13 @@ java ${JAVA_TMP} -jar ${QUEUE} -S ${SCRIPTS_DIR}/VariantCalling.scala \
 			  -R ${GENOME_REFERENCE} \
 			  --project ${PROJECT_NAME} \
 			  -i ${PROCESSED_BAM_OUTPUT}/${PROJECT_NAME}.cohort.list \
+			  -intervals ${INTERVALS} \
 			  -outputDir ${VCF_OUTPUT}/ \
 			  -run \
 			  -jobRunner Drmaa -jobNative '-A b2010028 -p node -N 1 --qos=seqver' \
 			  --job_walltime 3600 \
 			  -nt 8 \
+			  -retry 2 \
 			  ${DEBUG}
 
 # Check the script exit status, and if it did not finish, clean up and exit
