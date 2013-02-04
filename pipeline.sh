@@ -25,10 +25,10 @@ module load samtools/0.1.18
 #---------------------------------------------
 
 PIPELINE_SETUP_XML="pipelineSetup.xml"
-PROJECT_NAME="QC_20120116"
+PROJECT_NAME="TestProject"
 PROJECT_ID="a2009002"
-PROJECT_ROOT_DIR="../../"
-GATK_BUNDLE="/proj/a2009002/SnpSeqPipeline/gatk_bundle"
+PROJECT_ROOT_DIR="/local/data/SnpSeqPipelineIntegrationTestData"
+GATK_BUNDLE="/local/data/gatk_bundle/b37"
 GENOME_REFERENCE=${GATK_BUNDLE}"/human_b36_both.fasta"
 DB_SNP=${GATK_BUNDLE}"/dbsnp_137.b36.vcf"
 MILLS=${GATK_BUNDLE}"/Mills_and_1000G_gold_standard.indels.b36.vcf"
@@ -78,7 +78,7 @@ QUEUE="${PWD}/gatk/dist/Queue.jar"
 SCRIPTS_DIR="${PWD}/gatk/public/scala/qscript/org/broadinstitute/sting/queue/qscripts"
 PATH_TO_BWA="/bubo/sw/apps/bioinfo/bwa/0.6.2/kalkyl/bwa"
 PATH_TO_SAMTOOLS="/bubo/sw/apps/bioinfo/samtools/0.1.12-10/samtools"
-NBR_OF_BWA_THREADS=8
+NBR_OF_THREADS=8
 
 # Setup directory structure
 RAW_BAM_OUTPUT="bam_files_raw"
@@ -108,7 +108,7 @@ java ${JAVA_TMP} -jar ${QUEUE} -S ${SCRIPTS_DIR}/AlignWithBWA.scala \
 			-bwa ${PATH_TO_BWA} \
 			-samtools ${PATH_TO_SAMTOOLS} \
 			-bwape \
-			--bwa_threads ${NBR_OF_BWA_THREADS} \
+			--bwa_threads ${NBR_OF_THREADS} \
 			-jobRunner Drmaa \
 			--job_walltime 345600 \
 			-run \
@@ -143,7 +143,7 @@ java ${JAVA_TMP} -jar ${QUEUE} -S ${SCRIPTS_DIR}/DataProcessingPipeline.scala \
 			  -run \
 			  -jobRunner Drmaa -jobNative '-A b2010028 -p node -N 1' \
 			  --job_walltime 86400 \
-			  -nt 8 \
+			  -nt ${NBR_OF_THREADS} \
 			  ${DEBUG}
 
 # Check the script exit status, and if it did not finish, clean up and exit
@@ -165,7 +165,7 @@ java ${JAVA_TMP} -jar ${QUEUE} -S ${SCRIPTS_DIR}/VariantCalling.scala \
 			  -run \
 			  -jobRunner Drmaa -jobNative '-A b2010028 -p node -N 1 --qos=seqver' \
 			  --job_walltime 3600 \
-			  -nt 8 \
+			  -nt  ${NBR_OF_THREADS} \
 			  -retry 2 \
 			  ${DEBUG}
 
