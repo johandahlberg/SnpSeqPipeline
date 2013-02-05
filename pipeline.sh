@@ -27,13 +27,29 @@ module load samtools/0.1.18
 PIPELINE_SETUP_XML="pipelineSetup.xml"
 PROJECT_NAME="TestProject"
 PROJECT_ID="a2009002"
-PROJECT_ROOT_DIR="/local/data/SnpSeqPipelineIntegrationTestData"
+# Note that it's important that the last / is included in the root dir path
+PROJECT_ROOT_DIR="/local/data/SnpSeqPipelineIntegrationTestData/"
 GATK_BUNDLE="/local/data/gatk_bundle/b37"
-GENOME_REFERENCE=${GATK_BUNDLE}"/human_b36_both.fasta"
-DB_SNP=${GATK_BUNDLE}"/dbsnp_137.b36.vcf"
-MILLS=${GATK_BUNDLE}"/Mills_and_1000G_gold_standard.indels.b36.vcf"
-ONE_K_G=${GATK_BUNDLE}"/1000G_phase1.indels.b36.vcf"
+GENOME_REFERENCE=${GATK_BUNDLE}"/human_g1k_v37.fasta"
+DB_SNP=${GATK_BUNDLE}"/dbsnp_137.b37.vcf"
+MILLS=${GATK_BUNDLE}"/Mills_and_1000G_gold_standard.indels.b37.vcf"
+ONE_K_G=${GATK_BUNDLE}"/1000G_phase1.indels.b37.vcf"
 INTERVALS=""
+
+#---------------------------------------------
+# Check if we are running on uppmax or locally, and set the jobrunners and path accordingly
+#---------------------------------------------
+if [ -f "/bubo/sw/apps/build/slurm-drmaa" ];
+then
+	JOB_RUNNER=" Drmaa -jobNative '-A b2010028 -p node -N 1 --qos=seqver'"
+	PATH_TO_BWA="/bubo/sw/apps/bioinfo/bwa/0.6.2/kalkyl/bwa"
+	PATH_TO_SAMTOOLS="/bubo/sw/apps/bioinfo/samtools/0.1.12-10/samtools"
+else
+	JOB_RUNNER=" Shell"
+	PATH_TO_BWA="/usr/bin/bwa"
+	PATH_TO_SAMTOOLS="/usr/bin/samtools"
+fi
+
 
 
 #---------------------------------------------
@@ -76,9 +92,7 @@ trap clean_up SIGHUP SIGINT SIGTERM
 
 QUEUE="${PWD}/gatk/dist/Queue.jar"
 SCRIPTS_DIR="${PWD}/gatk/public/scala/qscript/org/broadinstitute/sting/queue/qscripts"
-PATH_TO_BWA="/bubo/sw/apps/bioinfo/bwa/0.6.2/kalkyl/bwa"
-PATH_TO_SAMTOOLS="/bubo/sw/apps/bioinfo/samtools/0.1.12-10/samtools"
-NBR_OF_THREADS=8
+NBR_OF_THREADS=16
 
 # Setup directory structure
 RAW_BAM_OUTPUT="bam_files_raw"
@@ -109,7 +123,7 @@ java ${JAVA_TMP} -jar ${QUEUE} -S ${SCRIPTS_DIR}/AlignWithBWA.scala \
 			-samtools ${PATH_TO_SAMTOOLS} \
 			-bwape \
 			--bwa_threads ${NBR_OF_THREADS} \
-			-jobRunner Drmaa \
+			-jobRunner ${JOB_RUNNER} \
 			--job_walltime 345600 \
 			-run \
 			${DEBUG}
@@ -141,7 +155,7 @@ java ${JAVA_TMP} -jar ${QUEUE} -S ${SCRIPTS_DIR}/DataProcessingPipeline.scala \
 			  --gatk_interval_string ${INTERVALS} \
 			  -cm USE_SW \
 			  -run \
-			  -jobRunner Drmaa -jobNative '-A b2010028 -p node -N 1' \
+			  -jobRunner ${JOB_RUNNER} \
 			  --job_walltime 86400 \
 			  -nt ${NBR_OF_THREADS} \
 			  ${DEBUG}
@@ -163,7 +177,7 @@ java ${JAVA_TMP} -jar ${QUEUE} -S ${SCRIPTS_DIR}/VariantCalling.scala \
 			  -intervals ${INTERVALS} \
 			  -outputDir ${VCF_OUTPUT}/ \
 			  -run \
-			  -jobRunner Drmaa -jobNative '-A b2010028 -p node -N 1 --qos=seqver' \
+			  -jobRunner ${JOB_RUNNER} \
 			  --job_walltime 3600 \
 			  -nt  ${NBR_OF_THREADS} \
 			  -retry 2 \
