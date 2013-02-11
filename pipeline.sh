@@ -70,7 +70,7 @@ fi
 TMP=tmp/${SLURM_JOB_ID}/
 
 # Comment and uncomment DEBUG to enable/disable the debugging mode of the pipeline.
-DEBUG="-l DEBUG -startFromScratch"
+DEBUG="-l DEBUG" # -startFromScratch"
 
 # Setup temporary directory for the the Qscript tmp files.
 # This will be removed as long as the script dies gracefully 
@@ -152,7 +152,7 @@ java ${JAVA_TMP} -jar ${QUEUE} -S ${SCRIPTS_DIR}/DataProcessingPipeline.scala \
 			  --dbsnp ${DB_SNP} \
                           --extra_indels ${MILLS} \
                           --extra_indels ${ONE_K_G} \
-			  --gatk_interval_string ${INTERVALS} \
+			  -intervals ${INTERVALS} \
 			  -cm USE_SW \
 			  -run \
 			  -jobRunner ${JOB_RUNNER} \
@@ -172,6 +172,7 @@ fi
 #------------------------------------------------------------------------------------------
 java ${JAVA_TMP} -jar ${QUEUE} -S ${SCRIPTS_DIR}/VariantCalling.scala \
 			  -R ${GENOME_REFERENCE} \
+			  -res ${GATK_BUNDLE} \
 			  --project ${PROJECT_NAME} \
 			  -i ${PROCESSED_BAM_OUTPUT}/${PROJECT_NAME}.cohort.list \
 			  -intervals ${INTERVALS} \
