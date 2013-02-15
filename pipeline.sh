@@ -28,29 +28,31 @@ PIPELINE_SETUP_XML="pipelineSetup.xml"
 PROJECT_NAME="TestProject"
 PROJECT_ID="a2009002"
 # Note that it's important that the last / is included in the root dir path
-PROJECT_ROOT_DIR="/local/data/SnpSeqPipelineIntegrationTestData/"
-GATK_BUNDLE="/local/data/gatk_bundle/b37"
+PROJECT_ROOT_DIR="/proj/a2009002/private/nobackup/QC/"
+GATK_BUNDLE="/proj/a2009002/SnpSeqPipeline/gatk_bundle/2.2/b37"
 GENOME_REFERENCE=${GATK_BUNDLE}"/human_g1k_v37.fasta"
 DB_SNP=${GATK_BUNDLE}"/dbsnp_137.b37.vcf"
 MILLS=${GATK_BUNDLE}"/Mills_and_1000G_gold_standard.indels.b37.vcf"
 ONE_K_G=${GATK_BUNDLE}"/1000G_phase1.indels.b37.vcf"
-INTERVALS=""
+INTERVALS="/proj/a2009002/nobackup/Enrichments/Illumina/TruSeq_exome_targeted_regions-gatk.interval_list"
 
 #---------------------------------------------
 # Check if we are running on uppmax or locally, and set the jobrunners and path accordingly
 #---------------------------------------------
-if [ -f "/bubo/sw/apps/build/slurm-drmaa" ];
+if [ -f "/bubo/sw/apps/build/slurm-drmaa/lib/libdrmaa.so" ];
 then
-	JOB_RUNNER=" Drmaa -jobNative '-A b2010028 -p node -N 1 --qos=seqver'"
+	JOB_RUNNER=" Drmaa"
+	JOB_NATIVE_ARGS="-A ${PROJECT_ID} -p node -N 1 --qos=seqver"
 	PATH_TO_BWA="/bubo/sw/apps/bioinfo/bwa/0.6.2/kalkyl/bwa"
 	PATH_TO_SAMTOOLS="/bubo/sw/apps/bioinfo/samtools/0.1.12-10/samtools"
 else
 	JOB_RUNNER=" Shell"
+	JOB_NATIVE_ARGS=""
 	PATH_TO_BWA="/usr/bin/bwa"
 	PATH_TO_SAMTOOLS="/usr/bin/samtools"
 fi
 
-
+echo "JOB_RUNNER: " ${JOB_RUNNER}
 
 #---------------------------------------------
 # Unless there exists a pipeline setup file, try to create one
@@ -124,6 +126,7 @@ java ${JAVA_TMP} -jar ${QUEUE} -S ${SCRIPTS_DIR}/AlignWithBWA.scala \
 			-bwape \
 			--bwa_threads ${NBR_OF_THREADS} \
 			-jobRunner ${JOB_RUNNER} \
+			-jobNative "${JOB_NATIVE_ARGS}" \
 			--job_walltime 345600 \
 			-run \
 			${DEBUG}
@@ -156,6 +159,7 @@ java ${JAVA_TMP} -jar ${QUEUE} -S ${SCRIPTS_DIR}/DataProcessingPipeline.scala \
 			  -cm USE_SW \
 			  -run \
 			  -jobRunner ${JOB_RUNNER} \
+                          -jobNative "${JOB_NATIVE_ARGS}" \
 			  --job_walltime 86400 \
 			  -nt ${NBR_OF_THREADS} \
 			  ${DEBUG}
@@ -179,6 +183,7 @@ java ${JAVA_TMP} -jar ${QUEUE} -S ${SCRIPTS_DIR}/VariantCalling.scala \
 			  -outputDir ${VCF_OUTPUT}/ \
 			  -run \
 			  -jobRunner ${JOB_RUNNER} \
+                          -jobNative "${JOB_NATIVE_ARGS}" \
 			  --job_walltime 3600 \
 			  -nt  ${NBR_OF_THREADS} \
 			  -retry 2 \
