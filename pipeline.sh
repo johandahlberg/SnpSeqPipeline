@@ -9,7 +9,7 @@
 #SBATCH --qos=seqver
 
 # Start by exporting the shared drmaa libaries to the LD_LIBRARY_PATH
-export LD_LIBRARY_PATH=/bubo/sw/apps/build/slurm-drmaa/lib/:$LD_LIBRARY_PATH
+export LD_LIBRARY_PATH=/bubo/sw/apps/build/slurm-drmaa/1.0.6/lib/:$LD_LIBRARY_PATH
 
 # We also need the correct java engine and R version
 module load java/sun_jdk1.6.0_18
