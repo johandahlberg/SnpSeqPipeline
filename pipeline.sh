@@ -127,7 +127,7 @@ java ${JAVA_TMP} -jar ${QUEUE} -S ${SCRIPTS_DIR}/AlignWithBWA.scala \
 			--bwa_threads ${NBR_OF_THREADS} \
 			-jobRunner ${JOB_RUNNER} \
 			-jobNative "${JOB_NATIVE_ARGS}" \
-			--job_walltime 345600 \
+			--job_walltime 172800 \
 			-run \
 			${DEBUG}
 
@@ -160,7 +160,7 @@ java ${JAVA_TMP} -jar ${QUEUE} -S ${SCRIPTS_DIR}/DataProcessingPipeline.scala \
 			  -run \
 			  -jobRunner ${JOB_RUNNER} \
                           -jobNative "${JOB_NATIVE_ARGS}" \
-			  --job_walltime 86400 \
+			  --job_walltime 345600 \
 			  -nt ${NBR_OF_THREADS} \
 			  ${DEBUG}
 
@@ -184,7 +184,7 @@ java ${JAVA_TMP} -jar ${QUEUE} -S ${SCRIPTS_DIR}/VariantCalling.scala \
 			  -run \
 			  -jobRunner ${JOB_RUNNER} \
                           -jobNative "${JOB_NATIVE_ARGS}" \
-			  --job_walltime 3600 \
+			  --job_walltime 345600 \
 			  -nt  ${NBR_OF_THREADS} \
 			  -retry 2 \
 			  ${DEBUG}
