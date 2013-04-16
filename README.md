@@ -1,6 +1,8 @@
 SnpSeqPipeline
 ==============
 
+NOTE: This is no longer in use. Please refer to: https://github.com/molmed/piper
+
 This is a prototype for a processing/analysis pipeline for next generation sequencing data from the SNP&SEQ Technology Platform at Uppsala University. Please note that nothing here is finished at this point, and that a lot of things might change before this is actually used.
 
 The pipeline is built on GATK Queue, and at the moment it is basically just a bash script which chains together a number of QScripts.
